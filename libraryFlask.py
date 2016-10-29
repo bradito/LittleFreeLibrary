@@ -1,4 +1,4 @@
-# libraryFlask.py
+	# libraryFlask.py
 from flask import Flask, render_template
 from astral import Astral
 from littlefreelibrary import *
@@ -19,7 +19,6 @@ print("library object created")
 # finalize method for main to catch program change and submit command and confirm the program changed.
 # change main template to actually submit the program change
 
-
 @app.route("/")
 def hello():
 	now = datetime.datetime.now()
@@ -31,7 +30,8 @@ def hello():
 			'title':'Little Free Library',
 			'time' : timestring,
 			'programs': lib.programs,
-			'currentProgram': lib.currentProgram
+			'currentProgram': lib.currentProgram,
+			'customLED': lib.customLED
 			}
 
 		return render_template('main.html', **templateData)
@@ -55,13 +55,20 @@ def update(action):
 			'message': 'Update attempted!',
 			'time' : timestring,
 			'programs': lib.programs,
-			'currentProgram': lib.currentProgram
+			'currentProgram': lib.currentProgram,
+			'customLED': lib.customLED
+
 			}
 
 		return render_template('main.html', **templateData)
 	else:
 		return render_template('notConnected.html')
 
+@app.context_processor
+def utility_processor():
+    def format_hex(r,g,b):
+        return u'{:02x}{:02x}{:02x}'.format(r,g,b)
+    return dict(format_hex=format_hex)
 
 @app.route("/sunset")
 def sunset():

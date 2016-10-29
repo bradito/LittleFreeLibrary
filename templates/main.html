@@ -3,6 +3,7 @@
 <head>
 	<title>{{ title }}</title>
 	<meta name="generator" content="BBEdit 11.5" />
+	<script src="{{ url_for('static', filename='jscolor.js') }}"></script>
 </head>
 <body>
 	<h1>Laurel Little Free Library</h1>
@@ -30,5 +31,33 @@
  	 {% endfor %}
 	</ul>
 	 <h3>the current program is {{currentProgram}}</h3>
+
+	 <h3>Custom Color Pickers</h3>
+	 <ul>
+	 {% for led in customLED %}
+	 <li>LED {{led.ledNumber}}: <input id="led{{led.ledNumber}}" class="jscolor {onFineChange:'update(this, &quot;{{led.ledNumber}}&quot;)'}" value="{{format_hex(led.r, led.g, led.b)}}"> - Current: R{{led.r}} G{{led.g}} B{{led.b}} - <a id="update{{led.ledNumber}}" href="/update/&amp;{{led.ledNumber}}">Update to: R<span id="r{{led.ledNumber}}"></span> G<span id="g{{led.ledNumber}}"></span> B<span id="b{{led.ledNumber}}"></span></a>
+	 </li>	
+ 	 {% endfor %}
+	</ul>
+
+
+<script>
+
+{% for led in customLED %}
+document.getElementById('led{{led.ledNumber}}').jscolor.fromRGB({{led.r}}, {{led.g}}, {{led.b}});
+{% endfor %}
+
+function update(picker,which) {
+    document.getElementById('r'+ which).innerHTML = Math.round(picker.rgb[0]);
+    document.getElementById('g'+ which).innerHTML = Math.round(picker.rgb[1]);
+    document.getElementById('b'+ which).innerHTML = Math.round(picker.rgb[2]);
+    document.getElementById('update'+ which).setAttribute("href", "/update/&"+ which + Math.round(picker.rgb[0]) 
+    																			   + "," + Math.round(picker.rgb[1])			
+                         														   + "," + Math.round(picker.rgb[2]));
+
+
+}
+</script>
+
 </body>
 </html>
